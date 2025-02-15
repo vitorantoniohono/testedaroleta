@@ -1,0 +1,651 @@
+// 'ID' VAI CRESCENDO EM ORDEM CRESCENTE COMEÇANDO EM UM E INDO ATÉ A QUANTIDADE PERMITIDA PELA VAR 'numerosDentroInput'
+// 'NUMBER' É O VALOR DO NÚMERO
+// 'COLOR' É A COR DO NÚMERO, PODENDO SER 'preto', 'vermelho', 'azul' OU 'verde'
+// 'TYPE' É O TIPO DO NÚMERO, PODENDO SER 'tier', 'voisins', 'orfao' OU 'zero'
+// 'ELEMENTS' É UM ARRAY DOS ELEMENTOS DO DOM QUE REPRESENTAM O NÚMERO, POIS UM MESMO NÚMERO PODE ESTAR REPRESENTADO POR ATÉ 3 ELEMENTOS NO HTML
+// EXEMPLO:
+let numbersElements = [
+    // EXEMPLO DE UM NÚMERO 1 NO TIPO 'tier'
+    // {
+    //     "id": 1,
+    //     "number": 1,
+    //     "color": "azul",
+    //     "type":  "tier",
+    //     "marcado": false,
+    //     "elements": [
+    //         "node1",
+    //         "node2",
+    //         "node3",
+    //     ]
+    // }
+]
+
+// OBJETO PARA CONTROLAR QUAIS IDS ESTÃO MARCADOS E QUAIS NÃO
+let markedNumbers = {
+    // 0: 0,
+    // 1: 0,
+    // 2: 1,
+    // 3: 3,
+    // 4: 2,
+}
+
+const numberTypes = {
+    0: 'zero',
+    1: 'orfao',
+    2: 'voisins',
+    3: 'zero',
+    4: 'voisins',
+    5: 'tier',
+    6: 'orfao',
+    7: 'voisins',
+    8: 'tier',
+    9: 'orfao',
+    10: 'tier',
+    11: 'tier',
+    12: 'zero',
+    13: 'tier',
+    14: 'orfao',
+    15: 'zero',
+    16: 'tier',
+    17: 'orfao',
+    18: 'voisins',
+    19: 'voisins',
+    20: 'orfao',
+    21: 'voisins',
+    22: 'voisins',
+    23: 'tier',
+    24: 'tier',
+    25: 'voisins',
+    26: 'zero',
+    27: 'tier',
+    28: 'voisins',
+    29: 'voisins',
+    30: 'tier',
+    31: 'orfao',
+    32: 'zero',
+    33: 'tier',
+    34: 'orfao',
+    35: 'zero',
+    36: 'tier'
+}
+
+const numerosMarcacoes = [
+    "", // --> QUANDO O NÚMERO NÃO ESTÁ MARCADO
+    "numero-text-marcado-yellow",
+    "numero-text-marcado-orange",
+    "numero-text-marcado-purple",
+]
+
+let arrayInput = []; // --> ARRAY QUE GUARDA OS NÚMEROS QUE ESTÃO DENTRO DO INPUT
+const totalNumbers = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36];
+const tierNumbers = [33,16,24,5,10,23,8,30,11,36,13,27];
+const orfaoNumbers = [1,20,14,31,9,6,34,17];
+const voisinsNumbers = [22,18,29,7,28,25,2,21,4,19];
+const zeroNumbers = [12,35,3,26,0,32,15];
+const vermelhoNumbers = [9,12,18,21,27,30,16,19];
+const pretoNumbers = [8,11,17,20,26,29,28,31,10,13];
+const azulNumbers = [1,2,3,4,5,6,7,14,15,22,23,24,25,32,33,34,35,36];
+
+// ARRAYS DE TIPOS
+let tierArray = [];
+let orfaoArray = [];
+let voisinsArray = [];
+let zeroArray = [];
+// ARRAYS DE CORES
+let vermelhosArray = [];
+let pretosArray = [];
+// ARRAY GUARDANDO INFORMAÇÃO DA SETA DE CADA NÚMERO DO INPUT
+let setaNumeros = [
+    // [3, ""], [5, "imgFlipH"] --> EXEMPLO
+];
+
+// QUANTIDADE DE NÚMEROS QUE PODE FICAR DENTRO DO INPUT
+const numerosDentroInput = 150;
+
+// INPUT
+const input = document.getElementById('textInput');
+
+const tierSpan = document.querySelector('#tierSpan');
+const orfaoSpan = document.querySelector('#orfaoSpan');
+const voisinsSpan = document.querySelector('#voisinsSpan');
+const zeroSpan = document.querySelector('#zeroSpan');
+
+const tierFeedbackDivText = document.getElementById('tier-feedback-number-list-text');
+const orfaoFeedbackDivText = document.getElementById('orfao-feedback-number-list-text');
+const voisinsFeedbackDivText = document.getElementById('voisins-feedback-number-list-text');
+const zeroFeedbackDivText = document.getElementById('zero-feedback-number-list-text');
+
+// PARTE DA ATUALIZAÇÃO DOS NÚMEROS EM RELAÇÃO ÀS CORES
+const vermelhoQntddText = document.getElementById('vermelho-number-qntdd');
+const pretoQntddText = document.getElementById('preto-number-qntdd');
+const quantidadeNumerosInputSpan = document.getElementById('quantidade-numeros-input-span');
+
+miniFeedbacksUpdate();
+input.addEventListener('keyup', (e) => {
+    if (e.key == ',' || e.key == ' ' || e.key == 'Enter') {
+        changeContagens();
+    }
+})
+
+function miniFeedbacksUpdate() {
+    // UPDATE DA CONTAGEM DE CADA UM DOS GRUPOS
+    let tierContagem = tierArray.length;
+    let orfaoContagem = orfaoArray.length;
+    let voisinsContagem = voisinsArray.length;
+    let zeroContagem = zeroArray.length;
+
+    tierSpan.innerHTML = tierContagem + 'x';
+    orfaoSpan.innerHTML = orfaoContagem + 'x';
+    voisinsSpan.innerHTML = voisinsContagem + 'x';
+    zeroSpan.innerHTML = zeroContagem + 'x';
+
+    numbersElements = [];
+    // UPDATE NA LISTA DE NÚMEROS DE CADA GRUPO
+    let tierNumberList = tierArray.map((num) => {
+        let colorNum = returnsColorNumber(num[0])
+        let idNumber = num[2]; // VARIÁVEL PARA ATRIBUIR O ID DO NÚMERO
+        numbersElements.push({
+            "id": idNumber,
+            "number": num[0],
+            "color": colorNum,
+            "type": "tier",
+            "elements": []
+        });
+        return `
+            <span class="numero-text numero-${colorNum} numero-text-id-${idNumber} ${numerosMarcacoes[markedNumbers[idNumber]]}">
+                <img src="./images/seta.png" alt="Seta" class="imgSetaCustom ${num[1]}">
+                ${num[0]}
+            </span>
+        `;
+    }).join('');
+    let orfaoNumberList = orfaoArray.map((num) => {
+        let colorNum = returnsColorNumber(num[0]);
+        let idNumber = num[2];
+        numbersElements.push({
+            "id": idNumber,
+            "number": num[0],
+            "color": colorNum,
+            "type": "orfao",
+            "elements": []
+        })
+        return `
+            <span class="numero-text numero-${colorNum} numero-text-id-${idNumber} ${numerosMarcacoes[markedNumbers[idNumber]]}">
+                <img src="./images/seta.png" alt="Seta" class="imgSetaCustom ${num[1]}">
+                ${num[0]}
+            </span>
+        `;
+    }).join('');
+    let voisinsNumberList = voisinsArray.map((num) => {
+        let colorNum = returnsColorNumber(num[0]);
+        let idNumber = num[2];
+        numbersElements.push({
+            "id": idNumber,
+            "number": num[0],
+            "color": colorNum,
+            "type": "voisins",
+            "elements": []
+        })
+        return `
+            <span class="numero-text numero-${colorNum} numero-text-id-${idNumber} ${numerosMarcacoes[markedNumbers[idNumber]]}">
+                <img src="./images/seta.png" alt="Seta" class="imgSetaCustom ${num[1]}">
+                ${num[0]}
+            </span>
+        `;
+    }).join('');
+    let zeroNumberList = zeroArray.map((num) => {
+        let colorNum = returnsColorNumber(num[0]);
+        let idNumber = num[2];
+        numbersElements.push({
+            "id": idNumber,
+            "number": num[0],
+            "color": colorNum,
+            "type": "zero",
+            "elements": []
+        })
+        return `
+            <span class="numero-text numero-${colorNum} numero-text-id-${idNumber} ${numerosMarcacoes[markedNumbers[idNumber]]}">
+                <img src="./images/seta.png" alt="Seta" class="imgSetaCustom ${num[1]}">
+                ${num[0]}
+            </span>
+        `;
+    }).join('');
+    
+    tierFeedbackDivText.innerHTML = tierNumberList;
+    orfaoFeedbackDivText.innerHTML = orfaoNumberList;
+    voisinsFeedbackDivText.innerHTML = voisinsNumberList;
+    zeroFeedbackDivText.innerHTML = zeroNumberList;
+    
+    tierFeedbackDivText.scrollTop = tierFeedbackDivText.scrollHeight;
+    orfaoFeedbackDivText.scrollTop = orfaoFeedbackDivText.scrollHeight;
+    voisinsFeedbackDivText.scrollTop = voisinsFeedbackDivText.scrollHeight;
+    zeroFeedbackDivText.scrollTop = zeroFeedbackDivText.scrollHeight;
+}
+
+function colorNumbersUpdate() {
+    let vermelhoContagem = vermelhosArray.length;
+    let pretoContagem = pretosArray.length;
+
+    vermelhoQntddText.innerHTML = `${vermelhoContagem}x`;
+    pretoQntddText.innerHTML = `${pretoContagem}x`;
+}
+
+function returnsColorNumber(number) {
+    if (vermelhoNumbers.includes(number)) {
+        return 'vermelho';
+    } else if (pretoNumbers.includes(number)) {
+        return 'preto';
+    } else if (azulNumbers.includes(number)) {
+        return 'azul';
+    }else if (number == 0) {
+        return 'verde';
+    } else {
+        return null;
+    }
+}
+
+// SELECIONAR A DIV DE ORDEM DOS NÚMEROS COLORIDOS
+const ordemNumerosColoridosBody = document.getElementById('ordem_numeros_coloridos-body');
+
+function changeContagens() {
+    const inputValue = input.innerText;
+    arrayInput = inputValue
+        .split(',')
+        .map(item => item.trim()) // Remove espaços em branco ao redor de cada item
+        .filter(item => item !== '') // Remove elementos vazios
+        .map(Number); // Converte cada item para número
+
+    if (arrayInput.length > numerosDentroInput) {
+        if (arrayInput[arrayInput.length - 1] >= 0 && arrayInput[arrayInput.length - 1] <= 36) {
+            arrayInput.shift();
+        }
+    }
+
+    // ZERAR AS ARRAYS DE CONTAGEM PARA EVITAR DUPLICIDADE
+    tierArray = [];
+    orfaoArray = [];
+    voisinsArray = [];
+    zeroArray = [];
+    vermelhosArray = [];
+    pretosArray = [];
+    
+    if (arrayInput.includes(NaN)) {
+        alert("Há um número inválido nos números digitados!");
+        return;
+    }
+
+    textInputUpdate(arrayInput);
+    
+    // RESETAR O PROGRESSO DOS NÚMEROS
+    for(i=0; i<totalNumbers.length; i++) {
+        progressoNumeros[totalNumbers[i]] = 0;
+    }
+    // Atualizar os arrays de acordo com o grupo e cor
+    for(let numero of arrayInput) {
+        if (!tierNumbers.includes(numero) && !orfaoNumbers.includes(numero) && !voisinsNumbers.includes(numero) && !zeroNumbers.includes(numero)) {
+            alert('Você digitou um número não cadastrado nos TIPOS!');
+            return;
+        }
+    }
+
+    // ZERAR O ARRAY DE MARCADORES QUANDO O ARRAY DE INPUT ESTÁ VAZIO
+    if (arrayInput.length <= 0) {
+        markedNumbers = {};
+    }
+
+    arrayInput.forEach((numero, i) => {
+        if (tierNumbers.includes(numero)) {
+            tierArray.push([numero, i % 2 == 0 ? "" : "imgFlipH", i]);
+        } else if (orfaoNumbers.includes(numero)) {
+            orfaoArray.push([numero, i % 2 == 0 ? "" : "imgFlipH", i]);
+        } else if (voisinsNumbers.includes(numero)) {
+            voisinsArray.push([numero, i % 2 == 0 ? "" : "imgFlipH", i]);
+        } else if (zeroNumbers.includes(numero)) {
+            zeroArray.push([numero, i % 2 == 0 ? "" : "imgFlipH", i]);
+        }
+        progressoNumeros[numero] += 1;
+
+        if (vermelhoNumbers.includes(numero)) {
+            vermelhosArray.push(numero);
+        } else if (pretoNumbers.includes(numero)) {
+            pretosArray.push(numero);
+        }
+
+        isNaN(markedNumbers[i]) ? markedNumbers[i] = 0 : markedNumbers[i] = markedNumbers[i];
+    });
+
+    // Atualizar a exibição dos números nas divs
+    updateNumerosDigitados(arrayInput);
+    miniFeedbacksUpdate();
+    colorNumbersUpdate();
+    updateOrdemNumerosColoridos(arrayInput);
+    // atualizarBarraRoda(); -- NÃO PRECISA ATUALIZAR A BARRA DE PROGRESSO PARA O NOVO SISTEMA
+    // FUNÇÃO PARA COLOCAR UM EVENTO DE CLIQUE NOS 'numero-text'
+    registerClickEventNumeroText();
+    // FUNÇÃO PARA REGISTRAR O DOM DOS OBJETOS NO DICIONÁRIO
+    addElementObject();
+}
+function updateOrdemNumerosColoridos(arrayInput) {
+    // Limpa o conteúdo da div
+    ordemNumerosColoridosBody.innerHTML = '';
+
+    // Filtrar apenas números vermelhos e pretos e adicionar na ordem de inserção
+    arrayInput.forEach((numero, i) => {
+        if (vermelhoNumbers.includes(numero)) {
+            ordemNumerosColoridosBody.innerHTML += `<span class="numero-text numero-vermelho numero-text-id-${i} ${numerosMarcacoes[markedNumbers[i]]}">
+                <img src="./images/seta.png" alt="Seta" class="imgSetaCustom ${i % 2 == 0 ? "" : "imgFlipH"}">
+                ${numero}
+            </span>`;
+        } else if (pretoNumbers.includes(numero)) {
+            ordemNumerosColoridosBody.innerHTML += `<span class="numero-text numero-preto numero-text-id-${i} ${numerosMarcacoes[markedNumbers[i]]}">
+                <img src="./images/seta.png" alt="Seta" class="imgSetaCustom ${i % 2 == 0 ? "" : "imgFlipH"}">
+                ${numero}
+            </span>`;
+        }
+    });
+    ordemNumerosColoridosBody.scrollTop = ordemNumerosColoridosBody.scrollHeight;
+}
+
+function textInputUpdate(arrayNow) {
+    // Remove a última vírgula e espaço
+    input.innerHTML = '';
+    arrayNow = arrayNow.filter(num => num >= 0 && num <= 36);
+    arrayNow.map((num, i) => {
+        input.innerHTML += `<span class="text-input-number numero-${returnsColorNumber(num)} numero-text-id-${i} ${numerosMarcacoes[markedNumbers[i]]}">
+            <img src="./images/seta.png" alt="Seta" class="imgSetaCustom ${i % 2 == 0 ? "" : "imgFlipH"}">
+            ${num}
+        </span>, `;
+    });
+
+    // Coloca o cursor no final do conteúdo
+    const range = document.createRange();
+    const selection = window.getSelection();
+    range.selectNodeContents(input);
+    range.collapse(false);
+    selection.removeAllRanges();
+    selection.addRange(range);
+}
+
+// -------------> RODA
+let progressoNumeros = {};
+for(i=0; i<totalNumbers.length; i++) {
+    progressoNumeros[totalNumbers[i]] = 0;
+}
+
+const arrayNumerosDOM = {
+    0: document.querySelector('.setor-0'),
+    1: document.querySelector('.setor-1'),
+    2: document.querySelector('.setor-2'),
+    3: document.querySelector('.setor-3'),
+    4: document.querySelector('.setor-4'),
+    5: document.querySelector('.setor-5'),
+    6: document.querySelector('.setor-6'),
+    7: document.querySelector('.setor-7'),
+    8: document.querySelector('.setor-8'),
+    9: document.querySelector('.setor-9'),
+    10: document.querySelector('.setor-10'),
+    11: document.querySelector('.setor-11'),
+    12: document.querySelector('.setor-12'),
+    13: document.querySelector('.setor-13'),
+    14: document.querySelector('.setor-14'),
+    15: document.querySelector('.setor-15'),
+    16: document.querySelector('.setor-16'),
+    17: document.querySelector('.setor-17'),
+    18: document.querySelector('.setor-18'),
+    19: document.querySelector('.setor-19'),
+    20: document.querySelector('.setor-20'),
+    21: document.querySelector('.setor-21'),
+    22: document.querySelector('.setor-22'),
+    23: document.querySelector('.setor-23'),
+    24: document.querySelector('.setor-24'),
+    25: document.querySelector('.setor-25'),
+    26: document.querySelector('.setor-26'),
+    27: document.querySelector('.setor-27'),
+    28: document.querySelector('.setor-28'),
+    29: document.querySelector('.setor-29'),
+    30: document.querySelector('.setor-30'),
+    31: document.querySelector('.setor-31'),
+    32: document.querySelector('.setor-32'),
+    33: document.querySelector('.setor-33'),
+    34: document.querySelector('.setor-34'),
+    35: document.querySelector('.setor-35'),
+    36: document.querySelector('.setor-36'),
+}
+
+const qtndPara100 = 3;
+let valorPorClique = calcularPorcentagemSetor(qtndPara100);
+const arraySetores = document.querySelectorAll('.setor');
+
+function calcularPorcentagemSetor(valor) {
+    // 50 POIS É A PARTIR DE 50% QUE A DIV COMEÇA A APARECER
+    // return valor * 50 / 100;
+    return 50 / valor;
+}
+
+function atualizarBarraRoda() {
+    // FOR PARA ATUALIZAR TODOS OS SETORES
+    for(let i = 0; i < arraySetores.length; i++) {
+        const setorParaUsar = arrayNumerosDOM[i];
+        const setorBar = setorParaUsar.querySelector('.setor-bar');
+        let valorDeSubtracao = progressoNumeros[i] * valorPorClique;
+        setorBar.style.width = `${50 - (valorDeSubtracao > 50 ? 50 : valorDeSubtracao)}%`;
+    }   
+}
+
+function updateNumerosDigitados(arrayInput) {
+    quantidadeNumerosInputSpan.innerText = arrayInput.length;
+}
+
+// SISTEMA DE DESLIGAR E LIGAR A ROLETA
+const checkbox = document.getElementById('roleta-on');
+const roda = document.getElementById('roda');
+
+checkbox.addEventListener('change', function () {
+    let miniFeedbacksTexts = document.querySelectorAll('.feedback-number-list');
+    if (checkbox.checked) {
+        roda.style.display = 'block';
+        miniFeedbacksTexts.forEach((item, i) => {
+            if (i > 3) { return; }
+            item.classList.remove('feedback-number-list-grande');
+        });
+    } else {
+        roda.style.display = 'none';
+        miniFeedbacksTexts.forEach((item, i) => {
+            if (i > 3) { return; }
+            item.classList.add('feedback-number-list-grande');
+        });
+    }
+});
+
+// FUNÇÃO PARA REGISTRAR UMM EVENTO DE CLIQUE PARA TODOS OS '.numero-text' DE MINI-FEEDBACKS
+function registerClickEventNumeroText() {
+    const numerosTexts = document.querySelectorAll('.numero-text');
+    numerosTexts.forEach((item, i) => {
+        item.addEventListener('click', () => {
+            const idNumber = Number(item.classList[2].replace(/\D/g, ""));
+            const number = numbersElements.find(num => num.id === idNumber);
+            markedNumbers[idNumber] = markedNumbers[idNumber] + 1 > numerosMarcacoes.length - 1 ? 0 : markedNumbers[idNumber] + 1;
+            
+            if (item.classList.length >= 4) {
+                const quartaClasse = item.classList[3];
+                if (markedNumbers[idNumber] == 0) {
+                    number.elements.forEach(item => {
+                        item.classList.remove(quartaClasse);
+                    });
+                    return;
+                }
+                number.elements.forEach(item => {
+                    item.classList.replace(quartaClasse, numerosMarcacoes[markedNumbers[idNumber]]);
+                });
+                return;
+            };
+            number.elements.forEach(item => {
+                item.classList.add(numerosMarcacoes[markedNumbers[idNumber]]);
+            });
+        })
+    });   
+}
+
+// FUNÇÃO PARA REGISTRAR TODOS OS ELEMENTOS REFERENTES AO NUMERO PARA O SEU ID ESPECIFÍCO DIGITADO PELO USUÁRIO
+function addElementObject() {
+    numbersElements.map(item => {
+        let idNumber = item['id'];
+        const elements = document.querySelectorAll(`.numero-text-id-${idNumber}`)
+        item['elements'] = elements;
+    });
+}
+
+// FUNÇÃO PARA ADICIONAR O EVENTO DE CLIQUE PARA OS SETORES DA RODA (ROLETA)
+let roletaProgress = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0, 11: 0, 12: 0, 13: 0, 14: 0, 15: 0, 16: 0, 17: 0, 18: 0, 19: 0, 20: 0, 21: 0, 22: 0, 23: 0, 24: 0, 25: 0, 26: 0, 27: 0, 28: 0, 29: 0, 30: 0, 31: 0, 32: 0, 33: 0, 34: 0, 35: 0, 36: 0 };
+const setorBars = document.querySelectorAll('.setor-bar');
+registerClickEventSetor()
+function registerClickEventSetor() {
+    setorBars.forEach(item => {
+        const setor = item.parentElement;
+        const setorNumeroSpan = setor.querySelector('.setor-numero-span');
+        const setorNumber = Number(setor.querySelector('.setor-numero-span').innerText);
+        item.addEventListener('click', () => {
+            roletaProgress[setorNumber]++;
+            let valorDeSubtracao = roletaProgress[setorNumber] * valorPorClique;
+            item.style.width = `${50 - (valorDeSubtracao > 50 ? 50 : valorDeSubtracao)}%`;
+            // input.innerText += setorNumber;
+            // changeContagens();
+        });
+        setorNumeroSpan.addEventListener('click', () => {
+            roletaProgress[setorNumber] = 0;
+            let valorDeSubtracao = roletaProgress[setorNumber] * valorPorClique;
+            item.style.width = `${50 - (valorDeSubtracao > 50 ? 50 : valorDeSubtracao)}%`;
+        });
+    });
+}
+
+// --------------------------------------- SISTEMA DE TROCA - PADRÃO-12 ---------------------------------------
+const mainDefaultSystem = document.getElementById('main-sys-default');
+const mainPadrao12 = document.getElementById('main-sys-padrao-12');
+
+let currentSystem = 0; // --> 0 = default, 1 = padrão-12
+function changeSystem() {
+    switch (currentSystem) {
+        case 0:
+            mainDefaultSystem.style.display = 'none';
+            mainPadrao12.style.display = 'block';
+            currentSystem = 1;
+            break;
+        case 1:
+            mainDefaultSystem.style.display = 'block';
+            mainPadrao12.style.display = 'none';
+            currentSystem = 0;
+            break;
+        default:
+            break;
+    }
+}
+
+// -----------------------------------------> SISTEMA DO PADRÃO-12 <-----------------------------------------
+const formPadrao12 = document.getElementById('form-padrao-12');
+let timeLinePadrao12 = [];
+// -- > TYPES
+// const verdePadrao12 = [0,26,3,35,12,28,7,29,18,22];
+// const azulPadrao12 = [31,14,20,1,33,16,24,5,9];
+// const amareloPadrao12 = [10,23,8,30,11,36,13,27,6];
+// const vermelhoPadrao12 = [34,17,25,2,21,4,19,15,32];
+// --> SUPER TYPES
+// const vermelhoSuperTypePadrao12 = [6,24,12,21];
+// const azulSuperTypePadrao12 = [27,5,28,2,34,16,35,4];
+const typesNumbersPadrao12 = {
+    0: { type: 'verde', superType: '', corEscrita: 'verde' },
+    1: { type: 'azul', superType: '', corEscrita: 'vermelho' },
+    2: { type: 'vermelho', superType: 'azul', corEscrita: 'preto' },
+    3: { type: 'verde', superType: '', corEscrita: 'vermelho' },
+    4: { type: 'vermelho', superType: 'azul', corEscrita: 'preto' },
+    5: { type: 'azul', superType: 'azul', corEscrita: 'vermelho' },
+    6: { type: 'amarelo', superType: 'vermelho', corEscrita: 'preto' },
+    7: { type: 'verde', superType: '', corEscrita: 'vermelho' },
+    8: { type: 'amarelo', superType: '', corEscrita: 'preto' },
+    9: { type: 'azul', superType: '', corEscrita: 'vermelho' },
+    10: { type: 'amarelo', superType: '', corEscrita: 'preto' },
+    11: { type: 'amarelo', superType: '', corEscrita: 'preto' },
+    12: { type: 'verde', superType: 'vermelho', corEscrita: 'vermelho' },
+    13: { type: 'amarelo', superType: '', corEscrita: 'preto' },
+    14: { type: 'azul', superType: '', corEscrita: 'vermelho' },
+    15: { type: 'vermelho', superType: '', corEscrita: 'preto' },
+    16: { type: 'azul', superType: 'azul', corEscrita: 'vermelho' },
+    17: { type: 'vermelho', superType: '', corEscrita: 'preto' },
+    18: { type: 'verde', superType: '', corEscrita: 'vermelho' },
+    19: { type: 'vermelho', superType: '', corEscrita: 'vermelho' },
+    20: { type: 'azul', superType: '', corEscrita: 'preto' },
+    21: { type: 'vermelho', superType: 'vermelho', corEscrita: 'vermelho' },
+    22: { type: 'verde', superType: '', corEscrita: 'preto' },
+    23: { type: 'amarelo', superType: '', corEscrita: 'vermelho' },
+    24: { type: 'azul', superType: 'vermelho', corEscrita: 'preto' },
+    25: { type: 'vermelho', superType: '', corEscrita: 'vermelho' },
+    26: { type: 'verde', superType: '', corEscrita: 'preto' },
+    27: { type: 'amarelo', superType: 'azul', corEscrita: 'vermelho' },
+    28: { type: 'verde', superType: 'azul', corEscrita: 'preto' },
+    29: { type: 'verde', superType: '', corEscrita: 'preto' },
+    30: { type: 'amarelo', superType: '', corEscrita: 'vermelho' },
+    31: { type: 'azul', superType: '', corEscrita: 'preto' },
+    32: { type: 'vermelho', superType: '', corEscrita: 'vermelho' },
+    33: { type: 'azul', superType: '', corEscrita: 'preto' },
+    34: { type: 'vermelho', superType: 'azul', corEscrita: 'vermelho' },
+    35: { type: 'verde', superType: 'azul', corEscrita: 'preto' },
+    36: { type: 'amarelo', superType: '', corEscrita: 'vermelho' }
+};
+
+formPadrao12.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const input = document.getElementById('input-padrao-12');
+    if (input.value === '' || input.value === ' ' || input.value === '  ') {
+        alert('Digite um número');
+        return;
+    }
+    const num = Math.floor(Number(input.value));
+    input.value = '';
+    if (num < 0 || num > 36 || isNaN(num)) {
+        alert('Número inválido');
+        return;
+    }
+    timeLinePadrao12.push(num);
+    updateNumberListPadrao12();
+    updateNumberListPadrao12Cores();
+});
+
+const quadradoPadrao12Body = document.getElementById('quadrado-padrao-12-body');
+const quadradoPadrao12BodyCores = document.getElementById('quadrado-padrao-12-body-cores');
+function updateNumberListPadrao12() {
+    let spanList = '';
+    timeLinePadrao12.slice().reverse().map((num) => {
+        let className = typesNumbersPadrao12[num].superType.length > 0 ? `numero-escrito-branco numero-${typesNumbersPadrao12[num].superType}` : `numero-escrito-${typesNumbersPadrao12[num].corEscrita}`;
+        spanList += `<span class="numero-quadrado-padrao-12 ${className}">${num}</span>`;
+    });
+    quadradoPadrao12Body.innerHTML = spanList;
+    addClickEventToElements(quadradoPadrao12Body.children);
+};
+
+function updateNumberListPadrao12Cores() {
+    let spanList = '';
+    timeLinePadrao12.slice().reverse().map((num) => {
+        let className = `numero-escrito-branco numero-${typesNumbersPadrao12[num].type}`;
+        spanList += `<span class="numero-quadrado-padrao-12 ${className}">${num}</span>`;
+    });
+    quadradoPadrao12BodyCores.innerHTML = spanList;
+    addClickEventToElements(quadradoPadrao12BodyCores.children);
+};
+
+function resetTimeLinePadrao12() {
+    timeLinePadrao12 = [];
+    updateNumberListPadrao12();
+    updateNumberListPadrao12Cores();
+}
+
+// FUNÇÃO PARA PEGAR O ARRAY DE ITENS HTML COMO PARÂMETRO ATRIBUIR UMA FUNÇÃO DE CLIQUE PARA TODOS ELES
+function addClickEventToElements(elements) {
+    const elementsArray = Array.from(elements)
+    elementsArray.forEach((element, i) => {
+        element.addEventListener('click', () => {
+            let indexCorreto = timeLinePadrao12.length - 1 - i;
+            timeLinePadrao12.splice(indexCorreto, 1);
+            updateNumberListPadrao12();
+            updateNumberListPadrao12Cores();
+        });
+    });
+}

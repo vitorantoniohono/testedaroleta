@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<!-- saved from url=(0037)https://duarte-roulette97.vercel.app/ -->
+<html lang="pt-br"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Rolleta</title>
+    <link rel="stylesheet" href="./Programa1_files/style.css">
+    <script src="./Programa1_files/script.js.download" defer=""></script>
+</head>
+<body>
+    <button class="changeSystemButton" onclick="changeSystem()">MUDAR</button>
+    <main id="main-sys-default" style="display: none;">
+        <div class="main-container">
+            <div class="input-container">
+                <label for="textInput">Números:</label>
+                <!-- <input type="text" id="textInput" name="textInput" autocomplete="off"> -->
+                <div type="text" id="textInput" contenteditable="true">
+                    <!-- <span class="text-input-number text-input-number-vermelho">5</span> -->
+                </div>
+                <div class="roleta-on-container">
+                    <span>ligar roleta:</span>
+                    <input type="checkbox" name="roleta-on" id="roleta-on" checked="">
+                </div>
+            </div>
+            <!-- <div class="img-container">
+                <img src="./images/roleta1.jpg" alt="Roleta">
+            </div> -->
+            <div class="feedback-numbers-container">
+                <div class="mini-feedback">
+                    <div class="mini-feedback-body">
+                        <b>TIER <br> (33-27):</b>
+                        <span id="tierSpan" class="spanQntdd">0x</span>
+                    </div>
+                    <div class="feedback-number-list">
+                        <p id="tier-feedback-number-list-text" class="feedback-number-list-text"></p>
+                    </div>
+                </div>
+                <div class="mini-feedback">
+                    <div class="mini-feedback-body">
+                        <b>ORFAO <br> (1-9 &amp; 6-17):</b>
+                        <span id="orfaoSpan" class="spanQntdd">0x</span>
+                    </div>
+                    <div class="feedback-number-list">
+                        <p id="orfao-feedback-number-list-text" class="feedback-number-list-text"></p>
+                    </div>
+                </div>
+                <div class="mini-feedback">
+                    <div class="mini-feedback-body">
+                        <b>VOISINS <br> (22-28 &amp; 25-19):</b>
+                        <span id="voisinsSpan" class="spanQntdd">0x</span>
+                    </div>
+                    <div class="feedback-number-list">
+                        <p id="voisins-feedback-number-list-text" class="feedback-number-list-text"></p>
+                    </div>
+                </div>
+                <div class="tier-feedback-container mini-feedback">
+                    <div class="mini-feedback-body">
+                        <b>ZERO <br> (12-15):</b>
+                        <span id="zeroSpan" class="spanQntdd">0x</span>
+                    </div>
+                    <div class="feedback-number-list">
+                        <p id="zero-feedback-number-list-text" class="feedback-number-list-text"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="roda-input-wrapper">
+                <div class="roda" id="roda">
+                    <div class="setor setor-0"><span class="setor-numero-span">0</span><div class="setor-bar"></div></div>
+                    <div class="setor setor-32"><span class="setor-numero-span">32</span><div class="setor-bar"></div></div>
+                    <div class="setor setor-15"><span class="setor-numero-span">15</span><div class="setor-bar"></div></div>
+                    <div class="setor setor-19"><span class="setor-numero-span">19</span><div class="setor-bar"></div></div>
+                    <div class="setor setor-4"><span class="setor-numero-span">4</span><div class="setor-bar"></div></div>
+                    <div class="setor setor-21"><span class="setor-numero-span">21</span><div class="setor-bar"></div></div>
+                    <div class="setor setor-2"><span class="setor-numero-span">2</span><div class="setor-bar"></div></div>
+                    <div class="setor setor-25"><span class="setor-numero-span">25</span><div class="setor-bar"></div></div>
+                    <div class="setor setor-17"><span class="setor-numero-span">17</span><div class="setor-bar"></div></div>
+                    <div class="setor setor-34"><span class="setor-numero-span">34</span><div class="setor-bar"></div></div>
+                    <div class="setor setor-6"><span class="setor-numero-span">6</span><div class="setor-bar"></div></div>
+                    <div class="setor setor-27"><span class="setor-numero-span">27</span><div class="setor-bar"></div></div>
+                    <div class="setor setor-13"><span class="setor-numero-span">13</span><div class="setor-bar"></div></div>
+                    <div class="setor setor-36"><span class="setor-numero-span">36</span><div class="setor-bar"></div></div>
+                    <div class="setor setor-11"><span class="setor-numero-span">11</span><div class="setor-bar"></div></div>
+                    <div class="setor setor-30"><span class="setor-numero-span">30</span><div class="setor-bar"></div></div>
+                    <div class="setor setor-8"><span class="setor-numero-span">8</span><div class="setor-bar"></div></div>
+                    <div class="setor setor-23"><span class="setor-numero-span">23</span><div class="setor-bar"></div></div>
+                    <div class="setor setor-10"><span class="setor-numero-span">10</span><div class="setor-bar"></div></div>
+                    <div class="setor setor-5"><span class="setor-numero-span">5</span><div class="setor-bar"></div></div>
+                    <div class="setor setor-24"><span class="setor-numero-span">24</span><div class="setor-bar"></div></div>
+                    <div class="setor setor-16"><span class="setor-numero-span">16</span><div class="setor-bar"></div></div>
+                    <div class="setor setor-33"><span class="setor-numero-span">33</span><div class="setor-bar"></div></div>
+                    <div class="setor setor-1"><span class="setor-numero-span">1</span><div class="setor-bar"></div></div>
+                    <div class="setor setor-20"><span class="setor-numero-span">20</span><div class="setor-bar"></div></div>
+                    <div class="setor setor-14"><span class="setor-numero-span">14</span><div class="setor-bar"></div></div>
+                    <div class="setor setor-31"><span class="setor-numero-span">31</span><div class="setor-bar"></div></div>
+                    <div class="setor setor-9"><span class="setor-numero-span">9</span><div class="setor-bar"></div></div>
+                    <div class="setor setor-22"><span class="setor-numero-span">22</span><div class="setor-bar"></div></div>
+                    <div class="setor setor-18"><span class="setor-numero-span">18</span><div class="setor-bar"></div></div>
+                    <div class="setor setor-29"><span class="setor-numero-span">29</span><div class="setor-bar"></div></div>
+                    <div class="setor setor-7"><span class="setor-numero-span">7</span><div class="setor-bar"></div></div>
+                    <div class="setor setor-28"><span class="setor-numero-span">28</span><div class="setor-bar"></div></div>
+                    <div class="setor setor-12"><span class="setor-numero-span">12</span><div class="setor-bar"></div></div>
+                    <div class="setor setor-35"><span class="setor-numero-span">35</span><div class="setor-bar"></div></div>
+                    <div class="setor setor-3"><span class="setor-numero-span">3</span><div class="setor-bar"></div></div>
+                    <div class="setor setor-26"><span class="setor-numero-span">26</span><div class="setor-bar"></div></div>
+                </div>
+                <div class="ordem_numeros_coloridos-container">
+                    <div class="ordem_numeros_coloridos-title-container">
+                        <b>ORDEM NÚMEROS PRETOS E VERMELHOS:</b>
+                    </div>
+                    <div class="ordem_numeros_coloridos-body" id="ordem_numeros_coloridos-body">
+                        <!-- <span class="numero-text numero-vermelho">8</span> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="cores-numbers-container">
+            <div class="cores-numbers-grid">
+                <span></span>
+                <span class="color-numbers-qntdd-text">Quantidade</span>
+                <span class="vermelho-number-title">Vermelhos:</span>
+                <span class="vermelho-number-qntdd" id="vermelho-number-qntdd">0x</span>
+                <span class="preto-number-title">Pretos:</span>
+                <span class="preto-number-qntdd" id="preto-number-qntdd">0x</span>
+            </div>
+        </div>
+        <div class="quantidade-numeros-input-container">
+            <div class="quantidade-numeros-input-title">
+                <h2>Números digitados:</h2>
+            </div>
+            <div class="quantidade-numeros-input-body">
+                <span id="quantidade-numeros-input-span">0</span>
+            </div>
+        </div>
+    </main>
+    <main id="main-sys-padrao-12" style="display: block;">
+        <div class="main-container main-container-padrao-12">
+            <div class="tutorial-cores-padrao-12-container">
+                <div class="tutorial-cores-padrao-12-body">
+                    <div class="tutorial-cores-padrao-12-title">
+                        <h4>VERDE:</h4>
+                    </div>
+                    <span class="numero-text numero-verde">22-0</span>
+                </div>
+                <div class="tutorial-cores-padrao-12-body">
+                    <div class="tutorial-cores-padrao-12-title">
+                        <h4>VERMELHO:</h4>
+                    </div>
+                    <span class="numero-text numero-vermelho">32-34</span>
+                </div>
+                <div class="tutorial-cores-padrao-12-body">
+                    <div class="tutorial-cores-padrao-12-title">
+                        <h4>AZUL:</h4>
+                    </div>
+                    <span class="numero-text numero-azul">5-9</span>
+                </div>
+                <div class="tutorial-cores-padrao-12-body">
+                    <div class="tutorial-cores-padrao-12-title">
+                        <h4>AMARELO:</h4>
+                    </div>
+                    <span class="numero-text numero-amarelo">6-10</span>
+                </div>
+            </div>
+            <div class="main-body-wrapper-padrao-12">
+                <div class="main-body-division">
+                    <div class="quadrado-padrao-12-container">
+                        <div class="quadrado-padrao-12-body" id="quadrado-padrao-12-body"><span class="numero-quadrado-padrao-12 numero-escrito-vermelho">25</span><span class="numero-quadrado-padrao-12 numero-escrito-vermelho">32</span><span class="numero-quadrado-padrao-12 numero-escrito-vermelho">1</span></div>
+                    </div>
+                </div>
+                <div class="main-body-division division-cores">
+                    <div class="quadrado-padrao-12-container">
+                        <div class="quadrado-padrao-12-body" id="quadrado-padrao-12-body-cores"><span class="numero-quadrado-padrao-12 numero-escrito-branco numero-vermelho">25</span><span class="numero-quadrado-padrao-12 numero-escrito-branco numero-vermelho">32</span><span class="numero-quadrado-padrao-12 numero-escrito-branco numero-azul">1</span></div>
+                    </div>
+                </div>
+                <div class="ordem_numeros_coloridos-container">
+                    <div class="ordem_numeros_coloridos-title-container">
+                        <b>ORDEM NÚMEROS PRETOS E VERMELHOS:</b>
+                    </div>
+                    <div class="ordem_numeros_coloridos-body" id="ordem_numeros_coloridos-body">
+                        <!-- <span class="numero-text numero-vermelho">8</span> -->
+                    </div>
+                </div>
+                <div class="cores-numbers-container">
+                    <div class="cores-numbers-grid">
+                        <span></span>
+                        <span class="color-numbers-qntdd-text">Quantidade</span>
+                        <span class="vermelho-number-title">Vermelhos:</span>
+                        <span class="vermelho-number-qntdd" id="vermelho-number-qntdd">0x</span>
+                        <span class="preto-number-title">Pretos:</span>
+                        <span class="preto-number-qntdd" id="preto-number-qntdd">0x</span>
+                    </div>
+                </div>
+            </div>
+        </div>    
+            <form id="form-padrao-12">
+                <input type="button" value="RESETAR" onclick="resetTimeLinePadrao12()">
+                <input type="text" placeholder="Digite o número" id="input-padrao-12" autocomplete="off">
+                <input type="submit" value="ENVIAR">
+            </form>
+        </div>
+    </main>
+
+</body></html>
