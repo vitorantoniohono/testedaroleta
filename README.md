@@ -1,0 +1,2 @@
+# testedaroleta
+estratégia de roleta
